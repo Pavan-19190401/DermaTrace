@@ -1,0 +1,50 @@
+[
+    {
+        "merged": "C:\\Users\\manik\\.gradle\\daemon\\8.13\\com.dermatrace.app-debug-46:\\layout_activity_registry.xml.flat",
+        "source": "C:\\Users\\manik\\.gradle\\daemon\\8.13\\com.dermatrace.app-main-48:\\layout\\activity_registry.xml"
+    },
+    {
+        "merged": "C:\\Users\\manik\\.gradle\\daemon\\8.13\\com.dermatrace.app-debug-46:\\drawable_bg_shutter_button.xml.flat",
+        "source": "C:\\Users\\manik\\.gradle\\daemon\\8.13\\com.dermatrace.app-main-48:\\drawable\\bg_shutter_button.xml"
+    },
+    {
+        "merged": "C:\\Users\\manik\\.gradle\\daemon\\8.13\\com.dermatrace.app-debug-46:\\layout_item_patient.xml.flat",
+        "source": "C:\\Users\\manik\\.gradle\\daemon\\8.13\\com.dermatrace.app-main-48:\\layout\\item_patient.xml"
+    },
+    {
+        "merged": "C:\\Users\\manik\\.gradle\\daemon\\8.13\\com.dermatrace.app-debug-46:\\drawable_bg_pill_guidance.xml.flat",
+        "source": "C:\\Users\\manik\\.gradle\\daemon\\8.13\\com.dermatrace.app-main-48:\\drawable\\bg_pill_guidance.xml"
+    },
+    {
+        "merged": "C:\\Users\\manik\\.gradle\\daemon\\8.13\\com.dermatrace.app-debug-46:\\drawable_bg_skeuo_card.xml.flat",
+        "source": "C:\\Users\\manik\\.gradle\\daemon\\8.13\\com.dermatrace.app-main-48:\\drawable\\bg_skeuo_card.xml"
+    },
+    {
+        "merged": "C:\\Users\\manik\\.gradle\\daemon\\8.13\\com.dermatrace.app-debug-46:\\layout_activity_camera.xml.flat",
+        "source": "C:\\Users\\manik\\.gradle\\daemon\\8.13\\com.dermatrace.app-main-48:\\layout\\activity_camera.xml"
+    },
+    {
+        "merged": "C:\\Users\\manik\\.gradle\\daemon\\8.13\\com.dermatrace.app-debug-46:\\layout_activity_main.xml.flat",
+        "source": "C:\\Users\\manik\\.gradle\\daemon\\8.13\\com.dermatrace.app-main-48:\\layout\\activity_main.xml"
+    },
+    {
+        "merged": "com.dermatrace.app-debug-46:/drawable_ic_launcher.xml.flat",
+        "source": "com.dermatrace.app-main-48:/drawable/ic_launcher.xml"
+    },
+    {
+        "merged": "C:\\Users\\manik\\.gradle\\daemon\\8.13\\com.dermatrace.app-debug-46:\\xml_file_paths.xml.flat",
+        "source": "C:\\Users\\manik\\.gradle\\daemon\\8.13\\com.dermatrace.app-main-48:\\xml\\file_paths.xml"
+    },
+    {
+        "merged": "C:\\Users\\manik\\.gradle\\daemon\\8.13\\com.dermatrace.app-debug-46:\\layout_activity_compare.xml.flat",
+        "source": "C:\\Users\\manik\\.gradle\\daemon\\8.13\\com.dermatrace.app-main-48:\\layout\\activity_compare.xml"
+    },
+    {
+        "merged": "C:\\Users\\manik\\.gradle\\daemon\\8.13\\com.dermatrace.app-debug-46:\\layout_activity_metrics.xml.flat",
+        "source": "C:\\Users\\manik\\.gradle\\daemon\\8.13\\com.dermatrace.app-main-48:\\layout\\activity_metrics.xml"
+    },
+    {
+        "merged": "C:\\Users\\manik\\.gradle\\daemon\\8.13\\com.dermatrace.app-debug-46:\\drawable_bg_reticle_circle.xml.flat",
+        "source": "C:\\Users\\manik\\.gradle\\daemon\\8.13\\com.dermatrace.app-main-48:\\drawable\\bg_reticle_circle.xml"
+    }
+]

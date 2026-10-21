@@ -1,0 +1,21 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme with Skeuomorphic Light styling -->
+    <style name="Theme.DermaTrace" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- Primary brand colors -->
+        <item name="colorPrimary">@color/primary_teal</item>
+        <item name="colorPrimaryVariant">#0369A1</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+        
+        <!-- Secondary brand color -->
+        <item name="colorSecondary">#0EA5E9</item>
+        <item name="colorSecondaryVariant">#0284C7</item>
+        <item name="colorOnSecondary">#FFFFFF</item>
+        
+        <!-- Status bar color -->
+        <item name="android:statusBarColor">@color/skeuo_bg</item>
+        <item name="android:windowLightStatusBar">true</item>
+        
+        <!-- Background -->
+        <item name="android:windowBackground">@color/skeuo_bg</item>
+    </style>
+</resources>

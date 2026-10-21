@@ -1,0 +1,17 @@
+lesion_id,image_id,dx,dx_type,age,sex,localization,img_num,part,risk_tier
+HAM_0005075,ISIC_0030607,bkl,histo,80.0,male,upper extremity,30607,HAM10000_images_part_2,benign
+HAM_0005075,ISIC_0029060,bkl,histo,80.0,male,upper extremity,29060,HAM10000_images_part_1,benign
+HAM_0000790,ISIC_0032654,bkl,histo,75.0,male,face,32654,HAM10000_images_part_2,benign
+HAM_0000790,ISIC_0032576,bkl,histo,75.0,male,face,32576,HAM10000_images_part_2,benign
+HAM_0005157,ISIC_0029340,bkl,histo,40.0,male,chest,29340,HAM10000_images_part_2,benign
+HAM_0005157,ISIC_0026286,bkl,histo,40.0,male,chest,26286,HAM10000_images_part_1,benign
+HAM_0005157,ISIC_0024880,bkl,histo,40.0,male,chest,24880,HAM10000_images_part_1,benign
+HAM_0006201,ISIC_0024420,bkl,histo,55.0,male,face,24420,HAM10000_images_part_1,benign
+HAM_0006201,ISIC_0030801,bkl,histo,55.0,male,face,30801,HAM10000_images_part_2,benign
+HAM_0004036,ISIC_0027727,df,histo,55.0,male,upper extremity,27727,HAM10000_images_part_1,benign
+HAM_0004036,ISIC_0027107,df,histo,55.0,male,upper extremity,27107,HAM10000_images_part_1,benign
+HAM_0004036,ISIC_0027648,df,histo,55.0,male,upper extremity,27648,HAM10000_images_part_1,benign
+HAM_0002706,ISIC_0025954,df,histo,40.0,male,lower extremity,25954,HAM10000_images_part_1,benign
+HAM_0002706,ISIC_0029783,df,histo,40.0,male,lower extremity,29783,HAM10000_images_part_2,benign
+HAM_0007410,ISIC_0029962,df,histo,65.0,male,foot,29962,HAM10000_images_part_2,benign
+HAM_0007410,ISIC_0031457,df,histo,65.0,male,foot,31457,HAM10000_images_part_2,benign

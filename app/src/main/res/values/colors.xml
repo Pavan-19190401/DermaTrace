@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Skeuomorphic Base Surfaces -->
+    <color name="skeuo_bg">#F8FAFC</color>
+    <color name="skeuo_card">#FFFFFF</color>
+    <color name="skeuo_card_border">#E2E8F0</color>
+    <color name="skeuo_card_pressed">#EEF2F6</color>
+
+    <!-- Medical Accents -->
+    <color name="primary_teal">#0284C7</color>
+    <color name="teal_light">#E0F2FE</color>
+    <color name="reticle_neon">#00E5FF</color>
+    <color name="reticle_glow">#3300E5FF</color>
+
+    <!-- Clinical Triage Status -->
+    <color name="safe_green">#10B981</color>
+    <color name="safe_green_bg">#DCFCE7</color>
+    <color name="warning_amber">#F59E0B</color>
+    <color name="warning_amber_bg">#FEF3C7</color>
+    <color name="urgent_red">#EF4444</color>
+    <color name="urgent_red_bg">#FEE2E2</color>
+
+    <!-- Typography -->
+    <color name="text_primary">#0F172A</color>
+    <color name="text_secondary">#64748B</color>
+    <color name="text_tertiary">#94A3B8</color>
+
+    <!-- Camera Viewfinder -->
+    <color name="camera_overlay_bg">#CC0F172A</color>
+</resources>

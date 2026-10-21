@@ -1,0 +1,8 @@
+{
+  "mean_same_distance": 0.33987631308180943,
+  "mean_diff_distance": 0.7201848712232378,
+  "distance_min": 0.08775446563959122,
+  "distance_max": 1.0606745481491089,
+  "change_threshold_low": 35.0,
+  "change_threshold_high": 65.0
+}

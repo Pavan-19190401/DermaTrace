@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">DermaTrace</string>
+    <string name="app_subtitle">Siamese MobileNetV2 Longitudinal Skin Monitoring</string>
+
+    <string name="role_patient">Patient</string>
+    <string name="role_clinician">Clinician (Admin)</string>
+
+    <string name="btn_start_scan">📷 Take Lesion Scan</string>
+    <string name="btn_compare_lesions">⇆ Compare Scans</string>
+    <string name="btn_patient_registry">🩺 Clinic Patient Registry</string>
+    <string name="btn_ml_metrics">📊 Deep Learning &amp; EDA Telemetry</string>
+
+    <string name="camera_guidance">📏 Maintain 10–15 cm distance • Align lesion within reticle</string>
+    <string name="decision_safe">Decision: No Visit Needed</string>
+    <string name="decision_visit">Decision: Visit a Doctor</string>
+    <string name="decision_inconclusive">Decision: Inconclusive (Repeat in 48h)</string>
+</resources>

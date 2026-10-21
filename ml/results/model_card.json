@@ -1,0 +1,96 @@
+{
+  "model_name": "DermaTrace On-Device Ensemble",
+  "version": "1.0.0",
+  "export_format": "TensorFlow Lite (Float16)",
+  "date": "2026-10-22",
+  "academic_info": {
+    "institution": "CMRIT Hyderabad",
+    "department": "Department of Computer Science & Engineering (AI & ML)",
+    "project_title": "DermaTrace: A Deep Learning-Based Mobile Framework for Longitudinal Skin Lesion Monitoring and Cancer Risk Pattern Recognition",
+    "team_members": [
+      "T. Prem Kumar",
+      "V. Manikanta Pavan",
+      "J. Tharun"
+    ],
+    "faculty_guide": "Ms. M. Bhavani"
+  },
+  "datasets": {
+    "primary": "HAM10000 (ISIC 2018 Task 3)",
+    "license": "CC BY-NC-SA 4.0",
+    "splits": "70% Train, 15% Validation, 15% Test (Grouped by lesion_id)"
+  },
+  "models": [
+    {
+      "id": "classifier.tflite",
+      "backbone": "MobileNetV2 (ImageNet Pretrained)",
+      "input_shape": [
+        1,
+        224,
+        224,
+        3
+      ],
+      "input_type": "Float32 (normalized [-1, 1])",
+      "output_shape": [
+        1,
+        7
+      ],
+      "classes": [
+        "akiec",
+        "bcc",
+        "bkl",
+        "df",
+        "mel",
+        "nv",
+        "vasc"
+      ],
+      "risk_tiers": {
+        "benign": [
+          "nv",
+          "bkl",
+          "df",
+          "vasc"
+        ],
+        "suspicious": [
+          "akiec"
+        ],
+        "malignant": [
+          "mel",
+          "bcc"
+        ]
+      },
+      "temperature": 1.3
+    },
+    {
+      "id": "siamese_embedder.tflite",
+      "backbone": "MobileNetV2 (Shared Trunk)",
+      "input_shape": [
+        1,
+        224,
+        224,
+        3
+      ],
+      "output_shape": [
+        1,
+        128
+      ],
+      "embedding_norm": "L2 Unit Hypersphere",
+      "loss": "Contrastive Loss with Synthetic Evolution Pairs"
+    }
+  ],
+  "thresholds": {
+    "change_score_low": 35.0,
+    "change_score_high": 65.0,
+    "benign_min_confidence": 0.55,
+    "malignant_min_confidence": 0.5,
+    "blur_min_laplacian_variance": 60.0
+  },
+  "evaluation_metrics": {
+    "accuracy": 0.5,
+    "balanced_accuracy": 0.5,
+    "melanoma_sensitivity": 0.0,
+    "melanoma_specificity": 1.0,
+    "macro_roc_auc": NaN,
+    "false_reassurance_rate_pct": 0.0
+  },
+  "disclaimer": "DermaTrace is a clinical decision-support and triage tool, NOT a diagnostic system. It does not replace a medical consultation with a certified dermatologist."
+}
