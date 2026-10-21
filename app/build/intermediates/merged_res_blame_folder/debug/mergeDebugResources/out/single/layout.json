@@ -1,23 +1,27 @@
 [
     {
-        "merged": "com.dermatrace.app-mergeDebugResources-45:/layout/activity_compare.xml",
-        "source": "com.dermatrace.app-main-48:/layout/activity_compare.xml"
+        "merged": "C:\\Users\\manik\\.gradle\\daemon\\8.13\\com.dermatrace.app-mergeDebugResources-45:\\layout\\activity_main.xml",
+        "source": "C:\\Users\\manik\\.gradle\\daemon\\8.13\\com.dermatrace.app-main-48:\\layout\\activity_main.xml"
     },
     {
-        "merged": "com.dermatrace.app-mergeDebugResources-45:/layout/activity_registry.xml",
-        "source": "com.dermatrace.app-main-48:/layout/activity_registry.xml"
+        "merged": "C:\\Users\\manik\\.gradle\\daemon\\8.13\\com.dermatrace.app-mergeDebugResources-45:\\layout\\activity_metrics.xml",
+        "source": "C:\\Users\\manik\\.gradle\\daemon\\8.13\\com.dermatrace.app-main-48:\\layout\\activity_metrics.xml"
     },
     {
-        "merged": "com.dermatrace.app-mergeDebugResources-45:/layout/activity_metrics.xml",
-        "source": "com.dermatrace.app-main-48:/layout/activity_metrics.xml"
+        "merged": "C:\\Users\\manik\\.gradle\\daemon\\8.13\\com.dermatrace.app-mergeDebugResources-45:\\layout\\activity_camera.xml",
+        "source": "C:\\Users\\manik\\.gradle\\daemon\\8.13\\com.dermatrace.app-main-48:\\layout\\activity_camera.xml"
     },
     {
-        "merged": "com.dermatrace.app-mergeDebugResources-45:/layout/item_patient.xml",
-        "source": "com.dermatrace.app-main-48:/layout/item_patient.xml"
+        "merged": "C:\\Users\\manik\\.gradle\\daemon\\8.13\\com.dermatrace.app-mergeDebugResources-45:\\layout\\activity_compare.xml",
+        "source": "C:\\Users\\manik\\.gradle\\daemon\\8.13\\com.dermatrace.app-main-48:\\layout\\activity_compare.xml"
     },
     {
-        "merged": "com.dermatrace.app-mergeDebugResources-45:/layout/activity_camera.xml",
-        "source": "com.dermatrace.app-main-48:/layout/activity_camera.xml"
+        "merged": "C:\\Users\\manik\\.gradle\\daemon\\8.13\\com.dermatrace.app-mergeDebugResources-45:\\layout\\activity_registry.xml",
+        "source": "C:\\Users\\manik\\.gradle\\daemon\\8.13\\com.dermatrace.app-main-48:\\layout\\activity_registry.xml"
+    },
+    {
+        "merged": "C:\\Users\\manik\\.gradle\\daemon\\8.13\\com.dermatrace.app-mergeDebugResources-45:\\layout\\item_patient.xml",
+        "source": "C:\\Users\\manik\\.gradle\\daemon\\8.13\\com.dermatrace.app-main-48:\\layout\\item_patient.xml"
     },
     {
         "merged": "com.dermatrace.app-mergeDebugResources-45:/layout/activity_main.xml",

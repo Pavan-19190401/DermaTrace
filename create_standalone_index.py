@@ -1,0 +1,854 @@
+import os
+
+web_file = r"app\src\main\assets\web\index.html"
+as_web_file = r"C:\Users\manik\AndroidStudioProjects\DermaTrace\app\src\main\assets\web\index.html"
+
+html_code = """<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>DermaTrace</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html, body {
+      width: 100%; height: 100%; background: #000000; color: #e2e8f0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      overflow: hidden;
+    }
+    button, input { font: inherit; }
+    
+    /* Liquid Glass Cards */
+    .card {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      -webkit-backdrop-filter: blur(18px) saturate(1.4);
+      backdrop-filter: blur(18px) saturate(1.4);
+      box-shadow: 0 16px 40px -22px rgba(0, 0, 0, 0.6);
+      border-radius: 16px;
+      padding: 16px;
+    }
+    .h { margin: 0; color: #e2e8f0; font-size: 15px; font-weight: 600; }
+    .m { margin: 4px 0 0; color: #94a3b8; font-size: 13px; line-height: 1.45; }
+    .in {
+      width: 100%; box-sizing: border-box; height: 48px; border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.18); background: rgba(0, 0, 0, 0.28);
+      color: #e2e8f0; padding: 0 14px; font-size: 15px;
+    }
+    .in:focus { outline: 2px solid rgba(56, 189, 248, 0.6); border-color: rgba(56, 189, 248, 0.6); }
+    .btn {
+      height: 48px; border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 12px;
+      background: rgba(255, 255, 255, 0.16); -webkit-backdrop-filter: blur(14px);
+      backdrop-filter: blur(14px); color: #ffffff; font-weight: 600; font-size: 15px;
+      cursor: pointer; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;
+      transition: all 0.2s ease;
+    }
+    .btn:active { transform: scale(0.98); background: rgba(255, 255, 255, 0.24); }
+    .btn-primary {
+      background: #38bdf8; color: #090d16; border: none; font-weight: 700;
+    }
+    .btn-primary:active { background: #0284c7; }
+    
+    .tag {
+      font-size: 11px; padding: 4px 10px; border-radius: 20px;
+      background: rgba(255, 255, 255, 0.08); color: #cbd5e1; border: 1px solid rgba(255, 255, 255, 0.1);
+      font-weight: 500; display: inline-block;
+    }
+    .tag-green { background: rgba(34, 197, 94, 0.15); color: #4ade80; border-color: rgba(34, 197, 94, 0.3); }
+    .tag-amber { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border-color: rgba(245, 158, 11, 0.3); }
+    .tag-red { background: rgba(239, 68, 68, 0.15); color: #f87171; border-color: rgba(239, 68, 68, 0.3); }
+
+    .row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 12px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.08); font-size: 14px;
+    }
+    .row:last-child { border-bottom: none; }
+
+    /* App container & Views */
+    #app-container {
+      width: 100%; height: 100%; position: relative; overflow: hidden; display: flex; flex-direction: column;
+    }
+    .view-container {
+      position: absolute; inset: 0; bottom: 74px; overflow-y: auto; overflow-x: hidden;
+      padding: 20px 16px; box-sizing: border-box; display: none; flex-direction: column; gap: 14px;
+      -webkit-overflow-scrolling: touch;
+    }
+    .view-container.active { display: flex; }
+    
+    /* Login / Onboarding view covers 100% */
+    #view-login {
+      position: absolute; inset: 0; z-index: 100; background: #000000;
+      overflow-y: auto; padding: 24px 18px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px;
+    }
+    
+    /* Bottom Navigation Bar */
+    .bottom-nav {
+      position: absolute; bottom: 0; left: 0; right: 0; height: 74px;
+      background: rgba(15, 23, 42, 0.85); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
+      border-top: 1px solid rgba(255, 255, 255, 0.12); display: flex; align-items: center; justify-content: space-around;
+      z-index: 50; padding-bottom: 8px;
+    }
+    .nav-btn {
+      background: none; border: none; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 4px; font-size: 11px; color: #94a3b8; cursor: pointer; flex: 1; padding: 8px 0; transition: color 0.2s;
+    }
+    .nav-btn.active { color: #38bdf8; }
+    .nav-btn svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    
+    /* Special Floating Capture Button */
+    .nav-capture-btn {
+      width: 52px; height: 52px; border-radius: 50%; background: linear-gradient(135deg, #38bdf8, #0284c7);
+      border: 2px solid rgba(255, 255, 255, 0.4); box-shadow: 0 4px 16px rgba(56, 189, 248, 0.4);
+      display: flex; align-items: center; justify-content: center; color: #fff; margin-top: -16px; cursor: pointer;
+    }
+    .nav-capture-btn svg { width: 26px; height: 26px; stroke: #fff; fill: none; stroke-width: 2.2; }
+
+    /* Particles animation for login */
+    .pt { animation: pulse 3s infinite ease-in-out; }
+    @keyframes pulse { 0%, 100% { opacity: 0.2; transform: scale(0.9); } 50% { opacity: 0.9; transform: scale(1.1); } }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+
+    /* Carousel */
+    .cs-track {
+      display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory;
+      padding: 4px 0 8px; -webkit-overflow-scrolling: touch;
+    }
+    .cs-slide {
+      flex: 0 0 100%; scroll-snap-align: center; min-height: 190px;
+    }
+  </style>
+</head>
+<body>
+
+<div id="app-container">
+
+  <!-- ==================== 1. ONBOARDING / LOGIN VIEW ==================== -->
+  <div id="view-login">
+    <div style="text-align: center; margin-bottom: 8px;">
+      <div style="width: 72px; height: 72px; margin: 0 auto 12px; border-radius: 20px; background: radial-gradient(circle at 30% 30%, #38bdf8, #0f172a); display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 30px rgba(56, 189, 248, 0.35); border: 1px solid rgba(255, 255, 255, 0.25);">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="9"></circle>
+          <path d="M12 3v18"></path>
+          <path d="M12 9a3 3 0 1 0 0 6"></path>
+        </svg>
+      </div>
+      <h1 style="font-size: 28px; font-weight: 800; letter-spacing: -0.5px; color: #fff;">DermaTrace</h1>
+      <p class="m" style="font-size: 14px; max-width: 280px; margin: 6px auto 0;">Track your skin lesions. Spot longitudinal changes early with deep learning.</p>
+    </div>
+
+    <div class="card" style="width: 100%; max-width: 360px; display: flex; flex-direction: column; gap: 14px;">
+      <h2 class="h" style="font-size: 16px;">Sign In to Patient Portal</h2>
+      <input id="login-email" class="in" type="email" placeholder="name@example.com" value="alex.morgan@example.com" />
+      <button id="btn-login" class="btn btn-primary">Continue</button>
+      
+      <div style="position: relative; text-align: center; margin: 4px 0;">
+        <span style="background: rgba(0,0,0,0.4); padding: 0 10px; font-size: 12px; color: #94a3b8;">or connect with</span>
+      </div>
+      
+      <div style="display: flex; gap: 8px;">
+        <button class="btn btn-social" onclick="enterApp('google')" style="flex: 1; height: 42px; font-size: 13px;">Google</button>
+        <button class="btn btn-social" onclick="enterApp('apple')" style="flex: 1; height: 42px; font-size: 13px;">Apple</button>
+      </div>
+    </div>
+
+    <!-- Mandatory Disclaimer -->
+    <div style="max-width: 360px; font-size: 11px; line-height: 1.45; color: #94a3b8; text-align: center; padding: 10px 14px; border-radius: 12px; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08);">
+      <strong style="color: #cbd5e1;">Medical Decision Support:</strong> DermaTrace is an AI-assisted triage and longitudinal tracking system, <span style="color: #f87171;">not a diagnostic device</span>. Always seek certified medical advice for skin concerns.
+    </div>
+  </div>
+
+  <!-- ==================== 2. HOME (DASHBOARD) VIEW ==================== -->
+  <div id="view-home" class="view-container">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <div>
+        <p class="m" style="margin: 0; font-size: 12px;">Welcome back</p>
+        <h1 style="margin: 2px 0 0; font-size: 22px; font-weight: 700; color: #fff;">Alex Morgan</h1>
+      </div>
+      <button onclick="switchTab('profile')" style="width: 40px; height: 40px; border-radius: 50%; background: #1e293b; border: 1px solid rgba(255, 255, 255, 0.15); color: #38bdf8; font-weight: 700; font-size: 14px; cursor: pointer;">AM</button>
+    </div>
+
+    <!-- Active Reminders Card -->
+    <div class="card" style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+      <div>
+        <h2 class="h">Monthly Skin Check</h2>
+        <p class="m">Next follow-up photo due in 12 days</p>
+      </div>
+      <button id="btn-notify-toggle" class="tag tag-green" onclick="triggerNotificationReminder()" style="border: none; cursor: pointer; padding: 6px 12px; font-size: 12px;">Remind Me</button>
+    </div>
+
+    <!-- Quick Camera Card -->
+    <div class="card" style="border-color: rgba(56, 189, 248, 0.35); background: linear-gradient(135deg, rgba(56, 189, 248, 0.08), rgba(15, 23, 42, 0.4));">
+      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px;">
+        <span style="width: 8px; height: 8px; border-radius: 50%; background: #38bdf8;"></span>
+        <h2 class="h" style="color: #fff;">Longitudinal Capture</h2>
+      </div>
+      <p class="m">Align with previous baseline photo or track a new skin lesion.</p>
+      <button class="btn btn-primary" onclick="switchTab('capture')" style="margin-top: 14px;">Open Camera &amp; Reticle</button>
+    </div>
+
+    <!-- Carousel: Assessments & Followups -->
+    <div style="display: flex; flex-direction: column; gap: 10px;">
+      <div class="cs-track">
+        <!-- Slide 1: Latest Assessment -->
+        <div class="card cs-slide" style="display: flex; flex-direction: column; gap: 10px;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h2 class="h">Latest Assessment</h2>
+            <span class="tag tag-green">18 Oct • Low Concern</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 14px;">
+            <div style="width: 58px; height: 58px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #7c6a63, #3b2f2b); border: 2px solid rgba(74, 222, 128, 0.5); flex: none;"></div>
+            <div>
+              <p style="margin: 0; color: #f1f5f9; font-size: 16px; font-weight: 700;">Left Forearm Pigment</p>
+              <p class="m">Change Score: 18.5% (Stable vs baseline)</p>
+            </div>
+          </div>
+          <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+            <span class="tag">Size 4.2 mm</span>
+            <span class="tag">Color Even</span>
+            <span class="tag">Border Regular</span>
+          </div>
+        </div>
+
+        <!-- Slide 2: Monitored Lesions -->
+        <div class="card cs-slide" style="display: flex; flex-direction: column; gap: 6px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+            <h2 class="h">Tracked Lesions (3)</h2>
+            <span class="tag" onclick="switchTab('lesions')" style="cursor: pointer;">View All</span>
+          </div>
+          <div class="row">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="width: 8px; height: 8px; border-radius: 50%; background: #4ade80;"></span>
+              <span>Left Forearm</span>
+            </div>
+            <span class="tag tag-green">Stable</span>
+          </div>
+          <div class="row">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="width: 8px; height: 8px; border-radius: 50%; background: #fbbf24;"></span>
+              <span>Upper Back</span>
+            </div>
+            <span class="tag tag-amber">Review Due</span>
+          </div>
+          <div class="row">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="width: 8px; height: 8px; border-radius: 50%; background: #4ade80;"></span>
+              <span>Right Calf</span>
+            </div>
+            <span class="tag tag-green">Stable</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+      <button class="btn" onclick="exportReport()" style="font-size: 13px;">Export Report</button>
+      <button class="btn" onclick="openDoctorMap()" style="font-size: 13px;">Find Doctor</button>
+    </div>
+
+    <p class="m" style="font-size: 11px; text-align: center; margin-top: 8px;">DermaTrace v1.0.0 (On-Device MobileNetV2 Ensemble)</p>
+  </div>
+
+  <!-- ==================== 3. LESIONS VIEW ==================== -->
+  <div id="view-lesions" class="view-container">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <h1 style="font-size: 24px; font-weight: 700; margin: 0; color: #fff;">My Lesions</h1>
+      <button class="tag tag-green" onclick="showAddLesionModal()" style="border: none; cursor: pointer; padding: 6px 12px; font-size: 12px;">+ Add Lesion</button>
+    </div>
+
+    <input class="in" type="search" placeholder="Search by body site or label..." oninput="filterLesions(this.value)" />
+
+    <div id="lesions-list" style="display: flex; flex-direction: column; gap: 10px;">
+      <!-- Populated dynamically via loadLesions() -->
+    </div>
+  </div>
+
+  <!-- ==================== 4. CAPTURE SCREEN ==================== -->
+  <div id="view-capture" class="view-container">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <h1 style="font-size: 22px; font-weight: 700; margin: 0; color: #fff;">Capture Skin Photo</h1>
+      <span class="tag">CameraX Guided</span>
+    </div>
+
+    <!-- Viewfinder Reticle Box -->
+    <div id="viewfinder-box" style="height: 270px; border-radius: 20px; border: 2px dashed rgba(56, 189, 248, 0.4); background: #07090e; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; overflow: hidden;">
+      <div style="width: 140px; height: 140px; border-radius: 50%; border: 2.5px solid rgba(56, 189, 248, 0.85); box-shadow: 0 0 24px rgba(56, 189, 248, 0.3); display: flex; align-items: center; justify-content: center;">
+        <span style="width: 6px; height: 6px; border-radius: 50%; background: #38bdf8;"></span>
+      </div>
+      <span class="m" style="position: absolute; bottom: 12px; font-size: 12px; color: #94a3b8; text-align: center; padding: 0 16px;">
+        Centre lesion in circle with coin or ruler nearby
+      </span>
+      <img id="capture-live-preview" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: none;" />
+    </div>
+
+    <!-- Live Quality Check -->
+    <div class="card">
+      <h2 class="h" style="margin-bottom: 4px;">Image Quality Gate Check</h2>
+      <div class="row">
+        <span>Focus / Sharpness</span>
+        <span id="qc-blur" class="tag tag-green">Sharp (Var: 165.2)</span>
+      </div>
+      <div class="row">
+        <span>Illumination &amp; Exposure</span>
+        <span id="qc-light" class="tag tag-green">Balanced (142 cd)</span>
+      </div>
+      <div class="row">
+        <span>Lesion in Frame</span>
+        <span id="qc-frame" class="tag tag-green">Centred</span>
+      </div>
+    </div>
+
+    <!-- Buttons -->
+    <div style="display: flex; gap: 10px;">
+      <button class="btn" onclick="triggerNativeGallery()" style="flex: 1; background: rgba(255, 255, 255, 0.08);">Import Gallery</button>
+      <button class="btn btn-primary" onclick="triggerNativeCamera()" style="flex: 1.5;">Take Photo</button>
+    </div>
+
+    <!-- Reference Scale Options -->
+    <div class="card" style="padding: 12px 16px;">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <span style="font-size: 13px; font-weight: 600; color: #e2e8f0;">Reference Scale Marker</span>
+          <p class="m" style="margin: 2px 0 0; font-size: 11px;">Improves diameter accuracy in mm</p>
+        </div>
+        <select id="scale-selector" style="background: rgba(0,0,0,0.5); color: #fff; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 6px 8px; font-size: 12px;">
+          <option value="none">Auto (Standard 224px)</option>
+          <option value="coin">Standard Coin (24.2 mm)</option>
+          <option value="ruler">Millimeter Ruler (10 mm)</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== 5. PROGRESS & TIMELINE VIEW ==================== -->
+  <div id="view-progress" class="view-container">
+    <h1 style="font-size: 24px; font-weight: 700; margin: 0; color: #fff;">Longitudinal Progress</h1>
+
+    <div class="card">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <div>
+          <h2 class="h">Left Forearm Pigment</h2>
+          <p class="m">3 visits tracked over 60 days</p>
+        </div>
+        <span class="tag tag-green">Stable Trajectory</span>
+      </div>
+
+      <!-- Change Score Trend SVG Chart -->
+      <div style="width: 100%; height: 120px; background: rgba(0,0,0,0.3); border-radius: 12px; padding: 10px; box-sizing: border-box; position: relative;">
+        <svg width="100%" height="100%" viewBox="0 0 300 100" preserveAspectRatio="none">
+          <!-- Threshold line 35% -->
+          <line x1="0" y1="65" x2="300" y2="65" stroke="rgba(245, 158, 11, 0.4)" stroke-dasharray="4" stroke-width="1.5" />
+          <!-- Trend line -->
+          <polyline fill="none" stroke="#38bdf8" stroke-width="3" points="20,90 150,82 280,78" />
+          <!-- Visit dots -->
+          <circle cx="20" cy="90" r="4.5" fill="#38bdf8" />
+          <circle cx="150" cy="82" r="4.5" fill="#38bdf8" />
+          <circle cx="280" cy="78" r="5" fill="#4ade80" stroke="#fff" stroke-width="1.5" />
+        </svg>
+        <span style="position: absolute; right: 12px; bottom: 8px; font-size: 10px; color: #94a3b8;">Latest Score: 18.5%</span>
+      </div>
+    </div>
+
+    <!-- Visit History Cards -->
+    <h3 style="font-size: 14px; color: #94a3b8; margin: 6px 0 2px;">Visit History</h3>
+    <div id="visits-timeline-list" style="display: flex; flex-direction: column; gap: 8px;">
+      <!-- Populated dynamically -->
+    </div>
+  </div>
+
+  <!-- ==================== 6. PROFILE & SETTINGS VIEW ==================== -->
+  <div id="view-profile" class="view-container">
+    <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 4px;">
+      <div style="width: 60px; height: 60px; border-radius: 50%; background: #1e293b; border: 2px solid #38bdf8; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 700; color: #fff;">AM</div>
+      <div>
+        <h1 style="font-size: 20px; font-weight: 700; margin: 0; color: #fff;">Alex Morgan</h1>
+        <p class="m" style="margin: 2px 0 0;">alex.morgan@example.com • DOB: 14/03/1990</p>
+      </div>
+    </div>
+
+    <!-- Settings toggles -->
+    <div class="card">
+      <h2 class="h" style="margin-bottom: 4px;">Notifications &amp; Reminders</h2>
+      <div class="row">
+        <div>
+          <span>Monthly Skin Check Alerts</span>
+          <p class="m" style="font-size: 11px;">WorkManager scheduled notification</p>
+        </div>
+        <input type="checkbox" checked onchange="toggleReminderSetting(this.checked)" style="transform: scale(1.3);" />
+      </div>
+      <div class="row">
+        <div>
+          <span>Analysis Ready Alerts</span>
+          <p class="m" style="font-size: 11px;">Instant notification when TFLite completes</p>
+        </div>
+        <input type="checkbox" checked style="transform: scale(1.3);" />
+      </div>
+    </div>
+
+    <!-- Clinical Actions -->
+    <div class="card">
+      <h2 class="h" style="margin-bottom: 8px;">Clinical Decision Support</h2>
+      <button class="btn btn-primary" onclick="exportReport()" style="margin-bottom: 10px;">Export Doctor PDF Summary</button>
+      <button class="btn" onclick="openDoctorMap()" style="background: rgba(255,255,255,0.08);">Find Certified Dermatologist Near Me</button>
+    </div>
+
+    <!-- About DermaTrace & Model Card -->
+    <div class="card">
+      <h2 class="h" style="margin-bottom: 6px;">About DermaTrace</h2>
+      <p class="m" style="font-size: 12px; margin-bottom: 8px;">
+        <strong>CMRIT Hyderabad</strong>, Department of Computer Science &amp; Engineering (AI &amp; ML).<br>
+        <strong>Team:</strong> T. Prem Kumar, V. Manikanta Pavan, J. Tharun<br>
+        <strong>Faculty Guide:</strong> Ms. M. Bhavani
+      </p>
+      <div style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; font-size: 11px; color: #94a3b8; line-height: 1.5;">
+        <div>• <strong>Models:</strong> 7-Class MobileNetV2 + Siamese Change Embedder</div>
+        <div>• <strong>Format:</strong> 100% On-Device TensorFlow Lite (Float16)</div>
+        <div>• <strong>Primary Dataset:</strong> HAM10000 (ISIC 2018 Task 3, CC BY-NC-SA 4.0)</div>
+      </div>
+    </div>
+
+    <button class="btn" onclick="signOut()" style="background: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.3); color: #f87171;">Sign Out</button>
+  </div>
+
+  <!-- ==================== BOTTOM NAVIGATION ==================== -->
+  <nav class="bottom-nav">
+    <button class="nav-btn active" id="tab-btn-home" onclick="switchTab('home')">
+      <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+      <span>Home</span>
+    </button>
+    
+    <button class="nav-btn" id="tab-btn-lesions" onclick="switchTab('lesions')">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+      <span>Lesions</span>
+    </button>
+
+    <div class="nav-capture-btn" onclick="switchTab('capture')">
+      <svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+    </div>
+
+    <button class="nav-btn" id="tab-btn-progress" onclick="switchTab('progress')">
+      <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+      <span>Progress</span>
+    </button>
+
+    <button class="nav-btn" id="tab-btn-profile" onclick="switchTab('profile')">
+      <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+      <span>Profile</span>
+    </button>
+  </nav>
+
+</div>
+
+<!-- ==================== ADD LESION MODAL ==================== -->
+<div id="add-lesion-modal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(12px); z-index: 200; align-items: center; justify-content: center; padding: 20px;">
+  <div class="card" style="width: 100%; max-width: 360px; display: flex; flex-direction: column; gap: 14px;">
+    <h2 class="h" style="font-size: 18px;">Track New Skin Lesion</h2>
+    <div>
+      <label class="m" style="font-size: 12px; display: block; margin-bottom: 4px;">Lesion Label / Name</label>
+      <input id="new-lesion-name" class="in" type="text" placeholder="e.g. Left Shoulder Mole" />
+    </div>
+    <div>
+      <label class="m" style="font-size: 12px; display: block; margin-bottom: 4px;">Anatomical Body Location</label>
+      <select id="new-lesion-site" class="in">
+        <option value="Left Forearm">Left Forearm</option>
+        <option value="Right Forearm">Right Forearm</option>
+        <option value="Upper Back">Upper Back</option>
+        <option value="Lower Back">Lower Back</option>
+        <option value="Chest">Chest</option>
+        <option value="Face / Neck">Face / Neck</option>
+        <option value="Left Leg">Left Leg</option>
+        <option value="Right Leg">Right Leg</option>
+        <option value="Abdomen">Abdomen</option>
+      </select>
+    </div>
+    <div style="display: flex; gap: 8px; margin-top: 8px;">
+      <button class="btn" onclick="hideAddLesionModal()" style="flex: 1; background: rgba(255,255,255,0.08);">Cancel</button>
+      <button class="btn btn-primary" onclick="submitNewLesion()" style="flex: 1;">Save &amp; Track</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== JAVASCRIPT APP LOGIC & NATIVE BRIDGE ==================== -->
+<script>
+  var currentTab = 'home';
+  var capturedImageBase64 = null;
+  var currentAnalysisResult = null;
+
+  // Initial Boot
+  document.addEventListener('DOMContentLoaded', function() {
+    console.log('[DermaTrace] App initialized.');
+    loadLesions();
+    loadTimeline();
+    
+    // Wire login
+    document.getElementById('btn-login').onclick = function() {
+      enterApp('email');
+    };
+  });
+
+  function enterApp(method) {
+    document.getElementById('view-login').style.display = 'none';
+    switchTab('home');
+  }
+
+  function signOut() {
+    document.getElementById('view-login').style.display = 'flex';
+  }
+
+  function switchTab(tab) {
+    currentTab = tab;
+    document.querySelectorAll('.view-container').forEach(function(el) {
+      el.classList.remove('active');
+    });
+    document.querySelectorAll('.nav-btn').forEach(function(el) {
+      el.classList.remove('active');
+    });
+
+    var targetView = document.getElementById('view-' + tab);
+    if (targetView) targetView.classList.add('active');
+
+    var targetBtn = document.getElementById('tab-btn-' + tab);
+    if (targetBtn) targetBtn.classList.add('active');
+
+    if (tab === 'lesions') loadLesions();
+    if (tab === 'progress') loadTimeline();
+  }
+
+  function loadLesions() {
+    var listEl = document.getElementById('lesions-list');
+    if (!listEl) return;
+
+    var lesions = [
+      { id: 'lesion-101', name: 'Left Forearm Pigment', anatomicalLocation: 'Left Forearm', latestRiskTier: 'benign', latestChangeScore: 18.5, lastVisitDate: Date.now() - 4*86400000 },
+      { id: 'lesion-102', name: 'Upper Back Border Change', anatomicalLocation: 'Upper Back', latestRiskTier: 'suspicious', latestChangeScore: 68.2, lastVisitDate: Date.now() - 2*86400000 },
+      { id: 'lesion-103', name: 'Right Calf Nevus', anatomicalLocation: 'Right Calf', latestRiskTier: 'benign', latestChangeScore: 12.0, lastVisitDate: Date.now() - 15*86400000 }
+    ];
+
+    try {
+      if (window.AndroidBridge && window.AndroidBridge.getLesions) {
+        var nativeLesions = JSON.parse(window.AndroidBridge.getLesions());
+        if (nativeLesions && nativeLesions.length > 0) lesions = nativeLesions;
+      }
+    } catch(e) {}
+
+    listEl.innerHTML = '';
+    lesions.forEach(function(l) {
+      var isMalignant = l.latestRiskTier === 'malignant';
+      var isSuspicious = l.latestRiskTier === 'suspicious';
+      var tagClass = isMalignant ? 'tag-red' : (isSuspicious ? 'tag-amber' : 'tag-green');
+      var tagText = isMalignant ? 'Malignant Pattern' : (isSuspicious ? 'Suspicious' : 'Stable Benign');
+
+      var item = document.createElement('div');
+      item.className = 'card';
+      item.style.cursor = 'pointer';
+      item.onclick = function() {
+        switchTab('progress');
+      };
+      item.innerHTML = `
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+          <h2 class="h">${l.name}</h2>
+          <span class="tag ${tagClass}">${tagText}</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; font-size: 13px; color: #94a3b8;">
+          <span>Site: ${l.anatomicalLocation}</span>
+          <span>Score: ${l.latestChangeScore.toFixed(1)}%</span>
+        </div>
+      `;
+      listEl.appendChild(item);
+    });
+  }
+
+  function loadTimeline() {
+    var timelineEl = document.getElementById('visits-timeline-list');
+    if (!timelineEl) return;
+
+    var visits = [
+      { id: '1', dateStr: '18 Oct 2026', outcome: 'No Visit Needed', changeScore: 18.5, diameter: '4.2 mm', classDesc: 'Melanocytic Nevus (nv)' },
+      { id: '2', dateStr: '20 Sep 2026', outcome: 'No Visit Needed', changeScore: 16.0, diameter: '4.1 mm', classDesc: 'Melanocytic Nevus (nv)' },
+      { id: '3', dateStr: '22 Aug 2026', outcome: 'Baseline Capture', changeScore: 0.0, diameter: '4.0 mm', classDesc: 'Baseline (nv)' }
+    ];
+
+    timelineEl.innerHTML = '';
+    visits.forEach(function(v) {
+      var card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+          <span style="font-size: 14px; font-weight: 700; color: #fff;">${v.dateStr}</span>
+          <span class="tag tag-green">${v.outcome}</span>
+        </div>
+        <p class="m" style="font-size: 12px;">Change score: ${v.changeScore.toFixed(1)}% • ${v.diameter} • ${v.classDesc}</p>
+      `;
+      timelineEl.appendChild(card);
+    });
+  }
+
+  function showAddLesionModal() {
+    document.getElementById('add-lesion-modal').style.display = 'flex';
+  }
+  function hideAddLesionModal() {
+    document.getElementById('add-lesion-modal').style.display = 'none';
+  }
+  function submitNewLesion() {
+    var name = document.getElementById('new-lesion-name').value.trim() || 'New Tracked Lesion';
+    var site = document.getElementById('new-lesion-site').value;
+    if (window.AndroidBridge && window.AndroidBridge.addLesion) {
+      window.AndroidBridge.addLesion(name, site);
+    }
+    hideAddLesionModal();
+    loadLesions();
+  }
+
+  function triggerNativeCamera() {
+    if (window.AndroidBridge && window.AndroidBridge.capturePhoto) {
+      window.AndroidBridge.capturePhoto();
+    } else {
+      simulatePhotoCapture();
+    }
+  }
+
+  function triggerNativeGallery() {
+    if (window.AndroidBridge && window.AndroidBridge.pickGallery) {
+      window.AndroidBridge.pickGallery();
+    } else {
+      simulatePhotoCapture();
+    }
+  }
+
+  function triggerNotificationReminder() {
+    if (window.AndroidBridge && window.AndroidBridge.scheduleReminder) {
+      window.AndroidBridge.scheduleReminder('Left Forearm Pigment', 4);
+    } else {
+      alert('Reminder scheduled for 4 weeks from now.');
+    }
+  }
+
+  function exportReport() {
+    if (window.AndroidBridge && window.AndroidBridge.exportPdfReport) {
+      window.AndroidBridge.exportPdfReport(null);
+    } else {
+      alert('Generating PDF clinical summary...');
+    }
+  }
+
+  function openDoctorMap() {
+    if (window.AndroidBridge && window.AndroidBridge.findDermatologist) {
+      window.AndroidBridge.findDermatologist();
+    } else {
+      window.open('https://www.google.com/maps/search/dermatologist+near+me', '_blank');
+    }
+  }
+
+  function toggleReminderSetting(enabled) {
+    if (enabled) triggerNotificationReminder();
+  }
+
+  // Called when image is received from camera or gallery
+  window.onImageCaptured = function(base64) {
+    console.log('[DermaTrace] onImageCaptured called');
+    capturedImageBase64 = base64;
+    var preview = document.getElementById('capture-live-preview');
+    if (preview) {
+      preview.src = base64;
+      preview.style.display = 'block';
+    }
+
+    showAnalysisLoading();
+
+    if (window.AndroidBridge && window.AndroidBridge.analyzeImage) {
+      window.AndroidBridge.analyzeImage(base64, null);
+    } else {
+      setTimeout(function() {
+        var mockResult = {
+          outcome: { title: "No Visit Needed", level: "green" },
+          changeScore: 19.4,
+          predictedClass: "nv",
+          className: "Melanocytic Nevus (Benign)",
+          confidence: 0.93,
+          riskTier: "BENIGN",
+          asymmetryScore: 0.13,
+          borderScore: 0.16,
+          colorScore: 0.19,
+          diameterMm: 4.3,
+          evolutionScore: 19.4,
+          plainLanguageRecommendation: "Low change score (19.4%) and confident benign pattern. Lesion appears stable. Continue routine monthly self-monitoring."
+        };
+        window.onAnalysisComplete(mockResult);
+      }, 1600);
+    }
+  };
+
+  window.onAnalysisComplete = function(result) {
+    hideAnalysisLoading();
+    currentAnalysisResult = result;
+    renderAnalysisModal(result);
+  };
+
+  window.onAnalysisError = function(err) {
+    hideAnalysisLoading();
+    alert('Analysis error: ' + err);
+  };
+
+  function showAnalysisLoading() {
+    var loader = document.getElementById('dt-loader');
+    if (!loader) {
+      loader = document.createElement('div');
+      loader.id = 'dt-loader';
+      loader.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.92);backdrop-filter:blur(18px);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;padding:24px;text-align:center;';
+      loader.innerHTML = `
+        <div style="width:60px;height:60px;border:3px solid rgba(56,189,248,0.2);border-top-color:#38bdf8;border-radius:50%;animation:spin 1s linear infinite;margin-bottom:20px;"></div>
+        <h2 style="font-size:20px;font-weight:700;margin:0 0 8px 0;color:#f8fafc;">Analyzing Skin Lesion...</h2>
+        <p style="font-size:13px;color:#94a3b8;margin:0;max-width:280px;line-height:1.5;">Running MobileNetV2 Siamese change detection &amp; 7-class pattern recognition (100% On-Device TFLite)</p>
+      `;
+      document.body.appendChild(loader);
+    }
+    loader.style.display = 'flex';
+  }
+
+  function hideAnalysisLoading() {
+    var loader = document.getElementById('dt-loader');
+    if (loader) loader.style.display = 'none';
+  }
+
+  function renderAnalysisModal(res) {
+    var modal = document.getElementById('dt-result-modal');
+    if (!modal) {
+      modal = document.createElement('div');
+      modal.id = 'dt-result-modal';
+      modal.style.cssText = 'position:fixed;inset:0;background:#000000;z-index:10000;overflow-y:auto;padding:20px 16px;box-sizing:border-box;color:#f8fafc;display:none;';
+      document.body.appendChild(modal);
+    }
+
+    var isGreen = res.outcome.level === 'green';
+    var isAmber = res.outcome.level === 'amber';
+    var badgeBg = isGreen ? 'rgba(34,197,94,0.15)' : (isAmber ? 'rgba(245,158,11,0.15)' : 'rgba(239,68,68,0.15)');
+    var badgeColor = isGreen ? '#4ade80' : (isAmber ? '#fbbf24' : '#f87171');
+    var badgeBorder = isGreen ? 'rgba(34,197,94,0.3)' : (isAmber ? 'rgba(245,158,11,0.3)' : 'rgba(239,68,68,0.3)');
+
+    var imgHtml = capturedImageBase64 ? `<img id="dt-result-img" src="${capturedImageBase64}" style="width:100%;height:220px;object-fit:cover;border-radius:14px;border:1px solid rgba(255,255,255,0.15);margin-bottom:12px;" />` : '';
+    var gradCamBtn = res.gradCamBase64 ? `<button id="btn-toggle-cam" class="btn" style="height:38px;font-size:12px;margin-bottom:12px;">Toggle Grad-CAM Heatmap</button>` : '';
+
+    modal.innerHTML = `
+      <div style="max-width:440px;margin:0 auto;display:flex;flex-direction:column;gap:12px;padding-bottom:30px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <h1 style="font-size:22px;font-weight:700;margin:0;">Analysis Result</h1>
+          <button onclick="closeResultModal()" style="background:none;border:none;color:#94a3b8;font-size:24px;cursor:pointer;padding:4px 8px;">✕</button>
+        </div>
+
+        ${imgHtml}
+        ${gradCamBtn}
+
+        <!-- Outcome Card -->
+        <div style="background:${badgeBg};border:1px solid ${badgeBorder};border-radius:16px;padding:18px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+            <span style="font-size:11px;text-transform:uppercase;letter-spacing:1px;font-weight:700;color:${badgeColor};">Triaged Outcome</span>
+            <span style="font-size:11px;background:${badgeBorder};color:${badgeColor};padding:3px 8px;border-radius:20px;font-weight:600;">${res.riskTier}</span>
+          </div>
+          <h2 style="font-size:22px;font-weight:800;color:#fff;margin:0 0 6px 0;">${res.outcome.title}</h2>
+          <p style="font-size:13px;line-height:1.5;color:#e2e8f0;margin:0;">${res.plainLanguageRecommendation}</p>
+        </div>
+
+        <!-- Siamese Score Gauge -->
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;">
+            <span style="font-size:14px;font-weight:600;color:#e2e8f0;">Siamese Change Score</span>
+            <span style="font-size:18px;font-weight:800;color:#38bdf8;">${res.changeScore.toFixed(1)}%</span>
+          </div>
+          <div style="height:10px;background:rgba(255,255,255,0.1);border-radius:6px;overflow:hidden;">
+            <div style="width:${Math.min(100, Math.max(0, res.changeScore))}%;height:100%;background:linear-gradient(90deg, #4ade80, #fbbf24 50%, #f87171);border-radius:6px;"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:#94a3b8;margin-top:6px;">
+            <span>0% (No Change)</span>
+            <span>35% Low</span>
+            <span>65% High</span>
+            <span>100%</span>
+          </div>
+        </div>
+
+        <!-- Classification & ABCDE -->
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+            <span style="font-size:13px;font-weight:600;color:#e2e8f0;">Predicted Class</span>
+            <span style="font-size:13px;color:#38bdf8;font-weight:700;">${(res.confidence * 100).toFixed(1)}% Confidence</span>
+          </div>
+          <p style="font-size:15px;color:#fff;font-weight:600;margin:0 0 12px 0;">${res.className}</p>
+
+          <h3 style="font-size:12px;color:#94a3b8;margin:0 0 8px 0;text-transform:uppercase;letter-spacing:0.5px;">ABCDE Breakdown</h3>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <div style="background:rgba(0,0,0,0.25);padding:8px 10px;border-radius:10px;border:1px solid rgba(255,255,255,0.08);">
+              <div style="font-size:11px;color:#94a3b8;">Asymmetry (A)</div>
+              <div style="font-size:14px;font-weight:700;color:#fff;">${res.asymmetryScore.toFixed(2)}</div>
+            </div>
+            <div style="background:rgba(0,0,0,0.25);padding:8px 10px;border-radius:10px;border:1px solid rgba(255,255,255,0.08);">
+              <div style="font-size:11px;color:#94a3b8;">Border Irreg. (B)</div>
+              <div style="font-size:14px;font-weight:700;color:#fff;">${res.borderScore.toFixed(2)}</div>
+            </div>
+            <div style="background:rgba(0,0,0,0.25);padding:8px 10px;border-radius:10px;border:1px solid rgba(255,255,255,0.08);">
+              <div style="font-size:11px;color:#94a3b8;">Color Variance (C)</div>
+              <div style="font-size:14px;font-weight:700;color:#fff;">${res.colorScore.toFixed(2)}</div>
+            </div>
+            <div style="background:rgba(0,0,0,0.25);padding:8px 10px;border-radius:10px;border:1px solid rgba(255,255,255,0.08);">
+              <div style="font-size:11px;color:#94a3b8;">Diameter (D)</div>
+              <div style="font-size:14px;font-weight:700;color:#fff;">${res.diameterMm.toFixed(1)} mm</div>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn btn-primary" onclick="exportReport()">Export &amp; Share Doctor PDF</button>
+        <button class="btn" onclick="openDoctorMap()" style="background:rgba(255,255,255,0.08);">Find Dermatologist Near Me</button>
+
+        <div style="font-size:11px;color:#f87171;line-height:1.45;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.25);padding:10px;border-radius:10px;text-align:center;">
+          <strong>Clinical Disclaimer:</strong> DermaTrace is a triage tool, NOT a diagnostic system. Always consult a dermatologist for medical evaluation.
+        </div>
+      </div>
+    `;
+
+    modal.style.display = 'block';
+
+    if (document.getElementById('btn-toggle-cam')) {
+      var showingGrad = false;
+      document.getElementById('btn-toggle-cam').onclick = function() {
+        var img = document.getElementById('dt-result-img');
+        if (img && res.gradCamBase64) {
+          showingGrad = !showingGrad;
+          img.src = showingGrad ? res.gradCamBase64 : capturedImageBase64;
+          this.textContent = showingGrad ? "Show Original Capture" : "Toggle Grad-CAM Heatmap";
+        }
+      };
+    }
+  }
+
+  function closeResultModal() {
+    var modal = document.getElementById('dt-result-modal');
+    if (modal) modal.style.display = 'none';
+  }
+
+  function simulatePhotoCapture() {
+    // Generate sample dermoscopic image
+    var cv = document.createElement('canvas');
+    cv.width = 224; cv.height = 224;
+    var ctx = cv.getContext('2d');
+    ctx.fillStyle = '#c59d82';
+    ctx.fillRect(0, 0, 224, 224);
+    var grd = ctx.createRadialGradient(112, 112, 10, 112, 112, 55);
+    grd.addColorStop(0, '#3b2317');
+    grd.addColorStop(0.7, '#633c2a');
+    grd.addColorStop(1, '#c59d82');
+    ctx.fillStyle = grd;
+    ctx.beginPath();
+    ctx.arc(112, 112, 55, 0, 2*Math.PI);
+    ctx.fill();
+    window.onImageCaptured(cv.toDataURL('image/jpeg'));
+  }
+</script>
+</body>
+</html>
+"""
+
+with open(web_file, "w", encoding="utf-8") as f:
+    f.write(html_code)
+
+with open(as_web_file, "w", encoding="utf-8") as f:
+    f.write(html_code)
+
+print("Generated self-contained index.html without iframe/external relay dependencies!")

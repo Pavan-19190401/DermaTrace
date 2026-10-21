@@ -114,6 +114,8 @@ class MainActivity : AppCompatActivity() {
             mediaPlaybackRequiresUserGesture = false
         }
 
+        WebView.setWebContentsDebuggingEnabled(true)
+        webView.setBackgroundColor(android.graphics.Color.BLACK)
         webView.setLayerType(View.LAYER_TYPE_HARDWARE, null)
         webView.addJavascriptInterface(bridge, "AndroidBridge")
 
