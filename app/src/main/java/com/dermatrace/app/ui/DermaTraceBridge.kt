@@ -16,11 +16,14 @@ import com.dermatrace.app.data.model.Visit
 import com.dermatrace.app.ml.TfliteLesionAnalyzer
 import com.dermatrace.app.util.PdfReportGenerator
 import com.dermatrace.app.util.ReminderWorker
+import com.dermatrace.app.util.BiometricSecurityManager
 import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import java.io.File
 import java.io.InputStream
 import java.util.UUID
 
@@ -34,6 +37,22 @@ class DermaTraceBridge(
 
     private var latestResult: AnalysisResult? = null
     private var activeLesionId: String = "lesion-101"
+
+    fun getActiveLesionId(): String = activeLesionId
+
+    @JavascriptInterface
+    fun performSuccessHaptic() {
+        activity.runOnUiThread {
+            com.dermatrace.app.util.HapticFeedbackHelper.performSuccess(activity)
+        }
+    }
+
+    @JavascriptInterface
+    fun performTickHaptic() {
+        activity.runOnUiThread {
+            com.dermatrace.app.util.HapticFeedbackHelper.performLightClick(activity)
+        }
+    }
 
     @JavascriptInterface
     fun getDashboardData(): String {
@@ -71,6 +90,15 @@ class DermaTraceBridge(
 
     @JavascriptInterface
     fun addLesion(name: String, location: String): String {
+        return addLesionInternal(name, location)
+    }
+
+    @JavascriptInterface
+    fun addLesion(name: String, location: String, detailsJson: String?): String {
+        return addLesionInternal(name, location)
+    }
+
+    private fun addLesionInternal(name: String, location: String): String {
         val id = "lesion-" + UUID.randomUUID().toString().substring(0, 8)
         val now = System.currentTimeMillis()
         val lesion = Lesion(
@@ -81,7 +109,7 @@ class DermaTraceBridge(
             lastVisitDate = now,
             latestRiskTier = "benign",
             latestChangeScore = 0f,
-            visitsCount = 0
+            visitsCount = 1
         )
         db.insertLesion(lesion)
         activeLesionId = id
@@ -89,9 +117,109 @@ class DermaTraceBridge(
     }
 
     @JavascriptInterface
+    fun addVisit(lesionId: String, changeScore: Float, decisionOutcome: String, predictedClass: String, confidence: Float, diameterMm: Float, notes: String?): String {
+        val now = System.currentTimeMillis()
+        val visitId = "visit-" + UUID.randomUUID().toString().substring(0, 8)
+        val visit = Visit(
+            id = visitId,
+            lesionId = lesionId,
+            timestamp = now,
+            imagePath = "",
+            changeScore = changeScore,
+            decisionOutcome = decisionOutcome,
+            predictedClass = predictedClass,
+            confidence = confidence,
+            asymmetry = 0.12f,
+            borderIrregularity = 0.18f,
+            colorVariation = 0.15f,
+            diameterMm = diameterMm,
+            evolutionScore = changeScore,
+            gradCamBase64 = null,
+            notes = notes ?: "Follow-up visit comparison"
+        )
+        db.insertVisit(visit)
+        return visitId
+    }
+
+    @JavascriptInterface
     fun capturePhoto() {
         activity.runOnUiThread {
             activity.launchCamera()
+        }
+    }
+
+    @JavascriptInterface
+    fun launchCameraForFollowUp(lesionId: String, baselinePhotoBase64: String?) {
+        activeLesionId = lesionId
+        activity.runOnUiThread {
+            var ghostFilePath: String? = null
+            if (!baselinePhotoBase64.isNullOrBlank()) {
+                try {
+                    val clean = if (baselinePhotoBase64.contains(",")) baselinePhotoBase64.substringAfter(",") else baselinePhotoBase64
+                    val bytes = Base64.decode(clean, Base64.DEFAULT)
+                    val tempFile = File(activity.externalCacheDir, "ghost_baseline_${lesionId}.jpg")
+                    tempFile.writeBytes(bytes)
+                    ghostFilePath = tempFile.absolutePath
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+            activity.launchCameraWithGhost(ghostFilePath)
+        }
+    }
+
+    @JavascriptInterface
+    fun isBiometricSupported(): Boolean {
+        return BiometricSecurityManager.isHardwareSupported(activity)
+    }
+
+    @JavascriptInterface
+    fun isBiometricEnabled(): Boolean {
+        return BiometricSecurityManager.isBiometricLockEnabled(activity)
+    }
+
+    @JavascriptInterface
+    fun toggleBiometric(enable: Boolean) {
+        activity.runOnUiThread {
+            if (enable) {
+                BiometricSecurityManager.authenticate(
+                    activity = activity,
+                    title = "Enable Biometric Security",
+                    subtitle = "Confirm biometric identity or device PIN to protect patient telemetry",
+                    onSuccess = {
+                        activity.markSessionAuthenticated()
+                        BiometricSecurityManager.setBiometricLockEnabled(activity, true)
+                        Toast.makeText(activity, "Biometric App Lock enabled", Toast.LENGTH_SHORT).show()
+                        activity.evaluateJavascript("window.onBiometricStateChanged && window.onBiometricStateChanged(true);")
+                    },
+                    onError = { err ->
+                        Toast.makeText(activity, "Authentication failed: $err", Toast.LENGTH_SHORT).show()
+                        activity.evaluateJavascript("window.onBiometricStateChanged && window.onBiometricStateChanged(false);")
+                    }
+                )
+            } else {
+                BiometricSecurityManager.setBiometricLockEnabled(activity, false)
+                Toast.makeText(activity, "Biometric App Lock disabled", Toast.LENGTH_SHORT).show()
+                activity.evaluateJavascript("window.onBiometricStateChanged && window.onBiometricStateChanged(false);")
+            }
+        }
+    }
+
+    @JavascriptInterface
+    fun testBiometricPrompt() {
+        activity.runOnUiThread {
+            BiometricSecurityManager.authenticate(
+                activity = activity,
+                title = "Biometric Verification Test",
+                subtitle = "Testing fingerprint, face, or device PIN gatekeeper",
+                onSuccess = {
+                    activity.markSessionAuthenticated()
+                    Toast.makeText(activity, "✓ Biometric identity verified successfully!", Toast.LENGTH_LONG).show()
+                },
+                onError = { err ->
+                    Toast.makeText(activity, "Biometric test canceled: $err", Toast.LENGTH_SHORT).show()
+                }
+            )
         }
     }
 
@@ -120,12 +248,8 @@ class DermaTraceBridge(
                     return@launch
                 }
 
-                // Retrieve baseline visit image if exists
-                val previousVisits = withContext(Dispatchers.IO) { db.getVisitsForLesion(lesionId) }
-                val baselineBitmap: Bitmap? = null // Uses baseline embedder calibration
-
                 val result = withContext(Dispatchers.Default) {
-                    analyzer.analyze(bitmap, baselineBitmap)
+                    analyzer.analyze(bitmap, null)
                 }
                 latestResult = result
 
@@ -162,6 +286,40 @@ class DermaTraceBridge(
     }
 
     @JavascriptInterface
+    fun analyzeImageSync(base64Image: String): String {
+        return analyzeWithBaselineSync(base64Image, null)
+    }
+
+    @JavascriptInterface
+    fun analyzeWithBaselineSync(base64Image: String, baselineBase64: String?): String {
+        return try {
+            val cleanBase64 = if (base64Image.contains(",")) base64Image.substringAfter(",") else base64Image
+            val decodedBytes = Base64.decode(cleanBase64, Base64.DEFAULT)
+            val bitmap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
+
+            var baselineBitmap: Bitmap? = null
+            if (!baselineBase64.isNullOrBlank()) {
+                val cleanBase = if (baselineBase64.contains(",")) baselineBase64.substringAfter(",") else baselineBase64
+                val baseBytes = Base64.decode(cleanBase, Base64.DEFAULT)
+                baselineBitmap = BitmapFactory.decodeByteArray(baseBytes, 0, baseBytes.size)
+            }
+
+            if (bitmap != null) {
+                val result = runBlocking(Dispatchers.Default) {
+                    analyzer.analyze(bitmap, baselineBitmap)
+                }
+                latestResult = result
+                gson.toJson(result)
+            } else {
+                "{}"
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            "{}"
+        }
+    }
+
+    @JavascriptInterface
     fun exportPdfReport(lesionId: String? = null) {
         activity.runOnUiThread {
             val targetId = lesionId ?: activeLesionId
@@ -180,20 +338,31 @@ class DermaTraceBridge(
 
     @JavascriptInterface
     fun findDermatologist() {
+        launchDermatologistSearch()
+    }
+
+    @JavascriptInterface
+    fun findDermatologist(lat: Double, lon: Double) {
+        launchDermatologistSearch()
+    }
+
+    private fun launchDermatologistSearch() {
         activity.runOnUiThread {
             try {
-                val gmmIntentUri = Uri.parse("geo:0,0?q=dermatologist+near+me")
+                val gmmIntentUri = Uri.parse("geo:0,0?q=dermatologist+skin+cancer+clinic+near+me")
                 val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri).apply {
                     setPackage("com.google.android.apps.maps")
                 }
-                if (mapIntent.resolveActivity(activity.packageManager) != null) {
+                try {
                     activity.startActivity(mapIntent)
-                } else {
-                    val webIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.google.com/maps/search/dermatologist+near+me"))
+                } catch (e: Exception) {
+                    // Fallback to browser Google Maps search
+                    val webIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.google.com/maps/search/dermatologist+skin+cancer+clinic+near+me"))
                     activity.startActivity(webIntent)
                 }
             } catch (e: Exception) {
-                Toast.makeText(activity, "Could not launch maps: ${e.message}", Toast.LENGTH_SHORT).show()
+                val webIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.google.com/maps/search/dermatologist+skin+cancer+clinic+near+me"))
+                activity.startActivity(webIntent)
             }
         }
     }
@@ -212,6 +381,36 @@ class DermaTraceBridge(
             activity.assets.open("model_card.json").bufferedReader().use { it.readText() }
         } catch (e: Exception) {
             "{}"
+        }
+    }
+
+    @JavascriptInterface
+    fun checkUserAccess(email: String): String {
+        val emailTrimmed = email.trim().lowercase()
+        val repo = com.dermatrace.app.admin.data.repository.SeedAdminRepository.getInstance(activity)
+        val users = repo.getUsers().value
+        val user = users.find { it.email.equals(emailTrimmed, ignoreCase = true) }
+        if (user != null && !user.isActive) {
+            return "SUSPENDED"
+        }
+        val isAdmin = emailTrimmed.startsWith("admin") || emailTrimmed.contains("admin")
+        if (isAdmin) {
+            val prefs = activity.getSharedPreferences("derma_prefs", Context.MODE_PRIVATE)
+            prefs.edit().putBoolean("is_admin", true).apply()
+            return "ADMIN"
+        }
+        val prefs = activity.getSharedPreferences("derma_prefs", Context.MODE_PRIVATE)
+        prefs.edit().putBoolean("is_admin", false).apply()
+        return "USER"
+    }
+
+    @JavascriptInterface
+    fun launchAdminWorkspace() {
+        activity.runOnUiThread {
+            val prefs = activity.getSharedPreferences("derma_prefs", Context.MODE_PRIVATE)
+            prefs.edit().putBoolean("is_admin", true).apply()
+            val intent = Intent(activity, com.dermatrace.app.admin.ui.AdminActivity::class.java)
+            activity.startActivity(intent)
         }
     }
 

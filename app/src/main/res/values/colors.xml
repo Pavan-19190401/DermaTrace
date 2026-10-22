@@ -27,4 +27,8 @@
 
     <!-- Camera Viewfinder -->
     <color name="camera_overlay_bg">#CC0F172A</color>
+
+    <!-- Standard Colors -->
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
 </resources>

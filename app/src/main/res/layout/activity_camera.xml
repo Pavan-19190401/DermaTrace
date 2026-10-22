@@ -11,12 +11,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <!-- Translucent Ghost Overlay for Orientation Matching -->
+    <!-- Translucent Ghost Overlay for Orientation & Scale Alignment -->
     <ImageView
         android:id="@+id/ivGhostOverlay"
         android:layout_width="260dp"
         android:layout_height="260dp"
-        android:alpha="0.4"
+        android:alpha="0.45"
         android:scaleType="centerCrop"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -35,47 +35,135 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Top Guidance Banner -->
-    <LinearLayout
-        android:id="@+id/guidancePill"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
+    <!-- Top App Bar Navigation & Torch -->
+    <ImageButton
+        android:id="@+id/btnBack"
+        android:layout_width="44dp"
+        android:layout_height="44dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="44dp"
         android:background="@drawable/bg_pill_guidance"
-        android:orientation="horizontal"
-        android:paddingHorizontal="20dp"
-        android:paddingVertical="10dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:contentDescription="Exit Camera"
+        android:padding="10dp"
+        android:src="@android:drawable/ic_menu_revert"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="📏 Maintain 10–15 cm • Center lesion inside ring"
-            android:textColor="#FFFFFF"
-            android:textSize="13sp"
-            android:textStyle="bold" />
-    </LinearLayout>
-
-    <!-- Torch Toggle Button -->
     <ImageButton
         android:id="@+id/btnToggleTorch"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginEnd="20dp"
+        android:layout_width="44dp"
+        android:layout_height="44dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="44dp"
         android:background="@drawable/bg_pill_guidance"
         android:contentDescription="Torch Toggle"
+        android:padding="10dp"
         android:src="@android:drawable/ic_menu_compass"
-        app:layout_constraintBottom_toBottomOf="@id/guidancePill"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/guidancePill" />
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Real-Time Edge AI Image Quality Gate Banner -->
+    <LinearLayout
+        android:id="@+id/guidancePill"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="12dp"
+        android:layout_marginTop="44dp"
+        android:background="@drawable/bg_pill_guidance"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="8dp"
+        app:layout_constraintEnd_toStartOf="@id/btnToggleTorch"
+        app:layout_constraintStart_toEndOf="@id/btnBack"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <View
+                android:id="@+id/statusDot"
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/bg_status_dot_ready" />
+
+            <TextView
+                android:id="@+id/tvGuidanceTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Aligning Viewfinder..."
+                android:textColor="#FFFFFF"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvQualityMetrics"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="Laplacian Sharpness: -- | Light: --"
+            android:textColor="#94A3B8"
+            android:textSize="10sp" />
+    </LinearLayout>
+
+    <!-- Interactive Ghost Overlay Alignment Dock -->
+    <LinearLayout
+        android:id="@+id/ghostControlDock"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/bg_ghost_controls"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingHorizontal="14dp"
+        android:paddingVertical="8dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/bottomDeck"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+            android:id="@+id/tvGhostLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="👻 Ghost Align"
+            android:textColor="#38BDF8"
+            android:textSize="11sp"
+            android:textStyle="bold" />
+
+        <SeekBar
+            android:id="@+id/seekGhostAlpha"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:max="100"
+            android:progress="45"
+            android:progressBackgroundTint="#475569"
+            android:progressTint="#38BDF8"
+            android:thumbTint="#38BDF8" />
+
+        <TextView
+            android:id="@+id/tvGhostAlphaValue"
+            android:layout_width="32dp"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:text="45%"
+            android:textColor="#E2E8F0"
+            android:textSize="11sp" />
+    </LinearLayout>
 
     <!-- Bottom Controls Deck -->
     <LinearLayout
+        android:id="@+id/bottomDeck"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="36dp"
+        android:layout_marginBottom="32dp"
         android:gravity="center"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent">
@@ -83,14 +171,15 @@
         <!-- Shutter Button -->
         <ImageButton
             android:id="@+id/btnCapture"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="76dp"
+            android:layout_height="76dp"
             android:background="@drawable/bg_shutter_button"
             android:contentDescription="Capture Scan"
             android:elevation="12dp"
             android:src="@android:drawable/ic_menu_camera" />
 
         <TextView
+            android:id="@+id/tvShutterHint"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"

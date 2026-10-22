@@ -1,5 +1,5 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme with Skeuomorphic Light styling -->
+<resources>
+    <!-- Base application theme with Skeuomorphic styling -->
     <style name="Theme.DermaTrace" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Primary brand colors -->
         <item name="colorPrimary">@color/primary_teal</item>
@@ -11,11 +11,10 @@
         <item name="colorSecondaryVariant">#0284C7</item>
         <item name="colorOnSecondary">#FFFFFF</item>
         
-        <!-- Status bar color -->
-        <item name="android:statusBarColor">@color/skeuo_bg</item>
-        <item name="android:windowLightStatusBar">true</item>
-        
-        <!-- Background -->
-        <item name="android:windowBackground">@color/skeuo_bg</item>
+        <!-- Status bar and navigation bar: OLED black with white icons, eliminating any white top borders on all devices -->
+        <item name="android:statusBarColor">#000000</item>
+        <item name="android:navigationBarColor">#000000</item>
+        <item name="android:windowBackground">#000000</item>
+        <item name="android:colorBackground">#000000</item>
     </style>
 </resources>

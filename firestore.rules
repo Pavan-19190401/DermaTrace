@@ -1,0 +1,70 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && request.auth.token.role == 'admin';
+    }
+
+    function isNotSuspended() {
+      return !exists(/databases/$(database)/documents/users/$(request.auth.uid)) ||
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.status != 'suspended';
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // 1. Staffing Reviewers & Shifts: Only Admins can create/update
+    match /reviewers/{reviewerId} {
+      allow read: if isAdmin();
+      allow write: if isAdmin();
+    }
+
+    match /shifts/{shiftId} {
+      allow read: if isAdmin();
+      allow write: if isAdmin();
+    }
+
+    // 2. Case Queue: Triage decision cases (pseudonymous, no patient photos)
+    match /caseQueue/{caseId} {
+      allow read: if isAdmin();
+      allow update: if isAdmin();
+      allow create: if isAuthenticated() && isNotSuspended();
+    }
+
+    // 3. User Accounts: Admins can view and toggle status; patients can read/update their own profile
+    match /users/{userId} {
+      allow read: if isAdmin() || isOwner(userId);
+      // Patients cannot alter role or status; Admins cannot alter private clinical fields
+      allow update: if (isAdmin() && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['clinicalNotes', 'photos'])) ||
+                       (isOwner(userId) && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role', 'status']));
+      allow create: if isAuthenticated();
+    }
+
+    // 4. Model Health & Thresholds
+    match /modelConfig/{docId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    // 5. Immutable Audit Log: Append-only by Admins, read-only for Admins
+    match /auditLog/{logId} {
+      allow read: if isAdmin();
+      allow create: if isAdmin() &&
+                       request.resource.data.adminUid == request.auth.uid &&
+                       request.resource.data.timestamp == request.time;
+      allow update, delete: if false; // strictly immutable
+    }
+
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
