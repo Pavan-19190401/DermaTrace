@@ -1,0 +1,13 @@
+# Configure GitHub Linguist to accurately reflect Native Android Kotlin development
+
+# Hide embedded Web SPA assets and standalone HTML templates from language stats
+*.html linguist-detectable=false
+*.js linguist-detectable=false
+*.css linguist-detectable=false
+
+# Treat assets folder as vendored/bundled resources
+app/src/main/assets/** linguist-vendored
+
+# Ensure Kotlin is detected as the primary platform language
+*.kt linguist-detectable=true
+*.kts linguist-detectable=true
